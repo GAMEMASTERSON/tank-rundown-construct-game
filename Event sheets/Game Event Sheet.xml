@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<c2eventsheet>
+    <!--All the 'name' attributes are ignored by Construct 2 - they are there for readability only.-->
+    <name>Game Event Sheet</name>
+    <events>
+        <variable constant="0" name="platform_speed" sid="5496487219587164" static="0" type="number">150</variable>
+        <variable constant="0" name="PLATFORM_SPAWN_RATE" sid="9802629001889407" static="0" type="number">0.75</variable>
+        <variable constant="0" name="randomx" sid="7087333070761828" static="0" type="number">0</variable>
+        <variable comment="**UPDATE** How many points the player earns per bonus, dodged obstacle, etc." constant="0" name="POINT_BONUS" sid="3794103216636451" static="0" type="number">10</variable>
+        <variable comment="**UPDATE** Duration of game in seconds.  If your game uses a timer." constant="0" name="timer" sid="2518816312667745" static="0" type="number">0</variable>
+        <variable comment="Player&apos;s Score" constant="0" name="score" sid="8015390899066013" static="0" type="number">0</variable>
+        <comment>Add game logic below.</comment>
+        <event-block sid="2989282732139944">
+            <conditions>
+                <condition id="-2" name="On start of layout" sid="7378643429464716" type="System" />
+            </conditions>
+            <actions>
+                <action id="-21" name="Reset global variables" sid="9511816063668257" type="System" />
+            </actions>
+        </event-block>
+        <comment>Countdown Timer, if your game needs timer</comment>
+        <event-block sid="8537727134889055">
+            <conditions>
+                <condition id="-6" name="Every X seconds" sid="268728024687269" type="System">
+                    <param id="0" name="Interval (seconds)">1</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-10" name="Add to" sid="658820121061442" type="System">
+                    <param id="0" name="Variable">timer</param>
+                    <param id="1" name="Value">1</param>
+                </action>
+                <action id="0" name="Set text" sid="4412193250521837" type="TimerText">
+                    <param id="0" name="Text">&quot;Time: &quot; &amp; timer</param>
+                </action>
+            </actions>
+        </event-block>
+        <comment>If the player&apos;s current score is greater than the high score when the game ends (in this case time expires), overwrite the high score.</comment>
+        <event-block any="1" sid="6213384539867952">
+            <conditions>
+                <condition id="-3" inverted="1" name="Is on-screen" sid="662137872567035" type="player" />
+                <condition id="-2" name="Compare Y" sid="1332786709529476" type="player">
+                    <param id="0" name="Comparison">2</param>
+                    <param id="1" name="Y co-ordinate">175</param>
+                </condition>
+            </conditions>
+            <actions />
+            <sub-events>
+                <event-block sid="9649939433185243">
+                    <conditions>
+                        <condition id="-14" name="Compare variable" sid="2185858873329924" type="System">
+                            <param id="0" name="Variable">score</param>
+                            <param id="1" name="Comparison">4</param>
+                            <param id="2" name="Value">HighScore</param>
+                        </condition>
+                    </conditions>
+                    <actions>
+                        <action id="-9" name="Set value" sid="3339259370868521" type="System">
+                            <param id="0" name="Variable">HighScore</param>
+                            <param id="1" name="Value">score</param>
+                        </action>
+                        <action id="0" name="Set item" sid="5688522431286072" type="LocalStorage">
+                            <param id="0" name="Key">HIGHSCORENAME</param>
+                            <param id="1" name="Value">score</param>
+                        </action>
+                        <action id="-2" name="Go to layout" sid="1900118909922448" type="System">
+                            <param id="0" name="Layout">End Layout</param>
+                        </action>
+                    </actions>
+                </event-block>
+                <event-block sid="5014272590189522">
+                    <conditions>
+                        <condition id="-22" name="Else" sid="5977717610566534" type="System" />
+                    </conditions>
+                    <actions>
+                        <action id="-2" name="Go to layout" sid="5523906719382401" type="System">
+                            <param id="0" name="Layout">End Layout</param>
+                        </action>
+                    </actions>
+                </event-block>
+            </sub-events>
+        </event-block>
+        <event-block sid="8653959967996952">
+            <conditions>
+                <condition id="0" name="On any touch start" sid="1865915155426623" type="Touch" />
+            </conditions>
+            <actions>
+                <action id="-9" name="Set value" sid="5778484087135364" type="System">
+                    <param id="0" name="Variable">score</param>
+                    <param id="1" name="Value">score+1</param>
+                </action>
+            </actions>
+        </event-block>
+        <event-block sid="3382843340915872">
+            <conditions>
+                <condition id="-1" name="Every tick" sid="9019155126136188" type="System" />
+            </conditions>
+            <actions>
+                <action id="0" name="Set text" sid="2230879047996498" type="HighScoreText">
+                    <param id="0" name="Text">&quot;Score: &quot; &amp; score</param>
+                </action>
+                <action id="-10" name="Add to" sid="810601243719482" type="System">
+                    <param id="0" name="Variable">score</param>
+                    <param id="1" name="Value">1</param>
+                </action>
+            </actions>
+        </event-block>
+        <event-block sid="4511283815747992">
+            <conditions>
+                <condition id="-6" name="Every X seconds" sid="3611858920165556" type="System">
+                    <param id="0" name="Interval (seconds)">PLATFORM_SPAWN_RATE</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-9" name="Set value" sid="9250133815376098" type="System">
+                    <param id="0" name="Variable">randomx</param>
+                    <param id="1" name="Value">random(-50,750)</param>
+                </action>
+                <action id="-3" name="Create object" sid="6977055353759229" type="System">
+                    <param id="0" name="Object to create">Platform</param>
+                    <param id="1" name="Layer">1</param>
+                    <param id="2" name="X">randomx</param>
+                    <param id="3" name="Y">LayoutHeight+10</param>
+                </action>
+                <action id="-3" name="Create object" sid="864470132548949" type="System">
+                    <param id="0" name="Object to create">Platform</param>
+                    <param id="1" name="Layer">1</param>
+                    <param id="2" name="X">randomx+platform.Width+200</param>
+                    <param id="3" name="Y">LayoutHeight + 10</param>
+                </action>
+            </actions>
+        </event-block>
+        <event-block sid="9639734023038796">
+            <conditions>
+                <condition id="-18" name="On created" sid="4330947719530259" type="Platform" />
+            </conditions>
+            <actions>
+                <action behavior="Bullet" id="3" name="Set angle of motion" sid="1392329598796793" type="Platform">
+                    <param id="0" name="Angle">270</param>
+                </action>
+                <action behavior="Bullet" id="0" name="Set speed" sid="4377512859625413" type="Platform">
+                    <param id="0" name="Speed">platform_speed</param>
+                </action>
+            </actions>
+        </event-block>
+        <event-block sid="7255013576128195">
+            <conditions>
+                <condition id="-2" name="Compare Y" sid="2413097937804183" type="Platform">
+                    <param id="0" name="Comparison">2</param>
+                    <param id="1" name="Y co-ordinate">0</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-9" name="Destroy" sid="5012027447163937" type="Platform" />
+            </actions>
+        </event-block>
+        <event-block sid="3738786330153366">
+            <conditions>
+                <condition id="-6" name="Every X seconds" sid="2153758268729622" type="System">
+                    <param id="0" name="Interval (seconds)">1.0</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-10" name="Add to" sid="4352462853344171" type="System">
+                    <param id="0" name="Variable">platform_speed</param>
+                    <param id="1" name="Value">25</param>
+                </action>
+                <action behavior="Bullet" id="0" name="Set speed" sid="9744925253125564" type="Platform">
+                    <param id="0" name="Speed">platform_speed</param>
+                </action>
+            </actions>
+        </event-block>
+    </events>
+</c2eventsheet>
